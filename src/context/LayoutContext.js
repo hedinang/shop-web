@@ -21,6 +21,7 @@ export const useLayoutContext = () => {
 
 export const LayoutProvider = ({children}) => {
   const [me, setMe] = useState(null);
+  const [isMeLoading, setIsMeLoading] = useState(true);
 
   const updateMe = (user) => {
     setMe(user);
@@ -53,7 +54,11 @@ export const LayoutProvider = ({children}) => {
   };
 
   const process = async () => {
-    await verifiedAccessToken(updateMe)
+    try {
+      await verifiedAccessToken(updateMe);
+    } finally {
+      setIsMeLoading(false);
+    }
   };
 
   const logout = async () => {
@@ -67,8 +72,8 @@ export const LayoutProvider = ({children}) => {
   }, []);
 
   const values = useMemo(
-      () => ({me, setMe, logout, verifiedAccessToken, updateMe}),
-      [me],
+      () => ({me, setMe, logout, verifiedAccessToken, updateMe, isMeLoading}),
+      [me, isMeLoading],
   );
 
   return <LayoutContext.Provider value={values}>{children}</LayoutContext.Provider>;

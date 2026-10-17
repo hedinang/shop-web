@@ -1,5 +1,5 @@
 import BaseApi from "./baseApi";
-import {AUTHEN, USER} from "./apiConstant";
+import {USER} from "./apiConstant";
 
 class UserApi extends BaseApi {
   getMe() {
@@ -14,6 +14,10 @@ class UserApi extends BaseApi {
     return this.post("secure" + USER + "list", param);
   }
 
+  listUsers(param) {
+    return this.listPerson(param);
+  }
+
   upload(request) {
     return this.post("secure" + USER + "upload-profile-image", request);
   }
@@ -24,6 +28,21 @@ class UserApi extends BaseApi {
 
   update(param) {
     return this.post("secure" + USER + "update", param);
+  }
+
+  createUser(param) {
+    return this.storeUser(param);
+  }
+
+  updateUser(param) {
+    return this.update(param);
+  }
+
+  deleteUser(param) {
+    return this.updateUser({
+      ...param,
+      status: "DELETED",
+    });
   }
 
   storeUser(param) {

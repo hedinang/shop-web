@@ -10,12 +10,13 @@ import {LoginModal} from "../modal/LoginModal";
 import {useLayoutContext} from "../../context/LayoutContext";
 import {ProfileModal} from "../modal/ProfileModal";
 import {getViewUrl} from "../../api/originalStorageApi";
+import {role} from "../../config/Constant";
 
 const MeDropdown = ({}) => {
   const {me, logout} = useLayoutContext()
   const [isModalProfileOpen, setIsModalProfileOpen] = useState(false);
 
-  const openProfileModal = async() => {
+  const openProfileModal = async () => {
     setIsModalProfileOpen(true);
   }
 
@@ -188,6 +189,9 @@ export const Header = () => {
           {/*</Dropdown>*/}
           <div>Khuyến mãi</div>
           <div>Chính sách</div>
+          {([role.ADMIN, role.SUPER_ADMIN].includes(me?.role)) && (
+              <button onClick={() => navigate("/users")}>Danh sách user</button>
+          )}
         </div>
 
         {isOpenLogin && <LoginModal open={isOpenLogin} onCancel={cancelLogin}/>}

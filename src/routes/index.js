@@ -14,6 +14,19 @@ import {OrderList} from "../pages/cart/OrderList";
 import {SimList} from "../pages/sim/SimList";
 import {SupplierDetail} from "../pages/sim/SupplierDetail";
 import {UserManagement} from "../pages/user/UserManagement";
+import {useLayoutContext} from "../context/LayoutContext";
+import {role} from "../config/Constant";
+
+const AdminUsersRoute = () => {
+  const {me, isMeLoading} = useLayoutContext();
+
+  if (isMeLoading) return null;
+  if (![role.ADMIN, role.SUPER_ADMIN].includes(me?.role)) {
+    return <Navigate to="/nation-list" replace />;
+  }
+
+  return <UserManagement />;
+};
 
 const router = createBrowserRouter([
   {
@@ -49,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: "/cart",
         element: <OrderList/>,
+      },
+      {
+        path: "/users",
+        element: <AdminUsersRoute />,
       },
     ],
   }

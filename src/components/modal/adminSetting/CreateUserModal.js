@@ -1,7 +1,6 @@
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
-import dayjs from "dayjs";
-import React, { useMemo, useState } from "react";
+import { Button, Form, Input, Modal, Select, Spin } from "antd";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useInfoUser } from "../../../store/UserStore";
 import apiFactory from "../../../api";
@@ -14,19 +13,11 @@ const CreateUserModal = ({
   title,
   editingUser,
   setUserList,
-  userList,
-  isActive,
+  statusFilter,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpenModalResetPW, setIsOpenModalResetPW] = useState(null);
-  const [isOpenModalConfirmSave, setIsOpenModalConfirmSave] = useState(null);
   const { languageMap } = useInfoUser();
-  const [user, setUser] = useState({
-    ...editingUser,
-    // roleCode: editingUser ? editingUser?.roleCode : "NORMAL",
-    // birthday: editingUser?.birthday ? dayjs(editingUser?.birthday) : null,
-  });
-
   const [form] = Form.useForm();
 
   const preventSubmitOnEnter = (e) => {
@@ -36,41 +27,43 @@ const CreateUserModal = ({
   };
 
   const onStore = async (request) => {
-    const result = await apiFactory.userApi.storeUser({
+    const payload = {
       ...request,
       userId: editingUser?.userId,
-    });
+    };
+    const result = editingUser?.userId
+      ? await apiFactory.userApi.updateUser(payload)
+      : await apiFactory.userApi.createUser(payload);
 
     if (result?.status !== 200) {
-      toast.error(result?.message);
+      toast.error(result?.message || "Could not save user");
       return;
     }
 
-    if (request?.status === "INACTIVE") {
-      let userIndex = userList?.findIndex(
-        (u) => u?.userId === result?.data?.userId
+    const savedUser = {
+      ...editingUser,
+      ...payload,
+      ...result?.data,
+    };
+    setUserList((currentUsers) => {
+      const updatedUsers = currentUsers.filter(
+        (currentUser) => currentUser.userId !== savedUser?.userId
       );
-      userList?.splice(userIndex, 1);
-      setUserList([...userList]);
-      cancelModal();
-      return;
-    }
 
-    if (editingUser?.userId) {
-      let userIndex = userList?.findIndex(
-        (u) => u?.userId === result?.data?.userId
-      );
-      userList[userIndex] = { ...result?.data };
-    } else {
-      userList = [{ ...result?.data }, ...userList];
-    }
-    setUserList([...userList]);
+      if (savedUser?.status && savedUser.status !== statusFilter) {
+        return updatedUsers;
+      }
+      return editingUser?.userId
+        ? [...updatedUsers, savedUser]
+        : [savedUser, ...updatedUsers];
+    });
+    toast.success(editingUser ? "User updated successfully" : "User created successfully");
     cancelModal();
   };
 
   const handleResetPassword = async () => {
     try {
-      const rs = await apiFactory.userApi.resetPassword(user?.userId);
+      const rs = await apiFactory.userApi.resetPassword(editingUser?.userId);
 
       if (rs?.status === 200) {
         toast.success("Reset password was successful");
@@ -82,11 +75,6 @@ const CreateUserModal = ({
     }
 
     setIsOpenModalResetPW(false);
-  };
-
-  const handleConfirmCreateUser = async () => {
-    setIsOpenModalResetPW(false);
-    form.submit();
   };
 
   const onFinish = async (values) => {
@@ -104,14 +92,14 @@ const CreateUserModal = ({
 
     const formatValue = {
       ...values,
-      userId: values?.userId?.trim(),
+      username: values?.username?.trim(),
       name: values?.name?.trim(),
     };
 
     try {
       await onStore(formatValue);
     } catch (error) {
-      console.error("Error fetching alarm list data:", error);
+      toast.error(error?.message || "Could not save user");
     } finally {
       setIsLoading(false);
     }
@@ -158,7 +146,9 @@ const CreateUserModal = ({
         wrapperCol={{
           span: 20,
         }}
-        initialValues={user}
+        initialValues={
+          editingUser || { role: role.CUSTOMER, status: "ACTIVE" }
+        }
       >
         <Form.Item
           name="username"
@@ -249,14 +239,16 @@ const CreateUserModal = ({
                 ? languageMap?.["as.menu.user.update.btnUpdate"] ?? "Update"
                 : languageMap?.["as.menu.user.update.btnCreate"] ?? "Create"}
             </Button>
-            <Button
-              type="primary"
-              className="bg-[#4096FF]"
-              onClick={() => setIsOpenModalResetPW(true)}
-            >
-              {languageMap?.["as.menu.user.update.btnResetPassword"] ??
-                "Reset password"}
-            </Button>
+            {editingUser && (
+              <Button
+                type="primary"
+                className="bg-[#4096FF]"
+                onClick={() => setIsOpenModalResetPW(true)}
+              >
+                {languageMap?.["as.menu.user.update.btnResetPassword"] ??
+                  "Reset password"}
+              </Button>
+            )}
           </div>
         )}
       </Form>
@@ -269,17 +261,6 @@ const CreateUserModal = ({
           onCancel={() => setIsOpenModalResetPW(false)}
           open={isOpenModalResetPW}
           onConfirm={handleResetPassword}
-        />
-      )}
-      {isOpenModalConfirmSave && (
-        <GeneralModal
-          title={
-            languageMap?.["as.menu.user.confirmExists"] ??
-            "This user already exists in the system. Do you want to add or edit this user?"
-          }
-          onCancel={() => setIsOpenModalConfirmSave(false)}
-          open={isOpenModalConfirmSave}
-          onConfirm={handleConfirmCreateUser}
         />
       )}
     </Modal>
