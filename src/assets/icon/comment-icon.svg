@@ -1,0 +1,7 @@
+<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"
+     class="FeatureItem_icon__va9Cr icon-message-square">
+    <rect width="24" height="24" rx="4" fill="#30A960"></rect>
+    <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M19.33 11.795c0 3.655-2.877 6.873-7.326 6.873a8.97 8.97 0 0 1-2.058-.234l-1.817.839a.667.667 0 0 1-.944-.55l-.14-1.681c-1.455-1.179-2.367-2.965-2.367-5.247-.262-3.818 3.28-7.127 7.326-7.127 4.046 0 7.327 2.8 7.327 7.127Zm-9.333-.127a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm2 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+          fill="#fff"></path>
+</svg>

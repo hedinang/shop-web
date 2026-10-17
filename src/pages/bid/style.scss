@@ -1,0 +1,17 @@
+.bid-list {
+  .bid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  .bid-update {
+    position: absolute;
+    background: #46ac40;
+    padding: 0px 5px 0px 5px;
+    rotate: 20%;
+    transform: rotate(-45deg);
+    left: 0px;
+    color: white;
+  }
+}

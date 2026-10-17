@@ -1,0 +1,1 @@
+openssl pkcs12 -export -inkey private.key -in cert.crt -certfile ca.crt -out keystore.p12 -name mykeyalias

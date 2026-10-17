@@ -1,0 +1,277 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eee;
+}
+
+.phone,
+.account {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.container {
+  width: 1280px;
+  margin: 0 auto;
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  background: white;
+  padding: 0 12px 30px;
+}
+
+.banner {
+  width: 760px;
+  height: 260px;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner-track {
+  display: flex;
+  height: 260px;
+  transition: transform 0.5s ease-in-out;
+}
+
+.banner-item {
+  min-width: 100%;
+  height: 260px;
+}
+
+.banner-item img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+}
+
+.banner-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  border: none;
+  background: rgba(0, 0, 0, 0.25);
+  color: white;
+  font-size: 42px;
+  cursor: pointer;
+  width: 36px;
+  height: 54px;
+}
+
+.banner-prev {
+  left: 8px;
+}
+
+.banner-next {
+  right: 8px;
+}
+
+.news-box {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 16px;
+}
+
+.news-box h4 {
+  color: #1e88e5;
+}
+
+.play {
+  margin: 45px auto;
+  width: 120px;
+  height: 120px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  font-size: 46px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid #ddd;
+}
+
+.tabs div {
+  text-align: center;
+  padding: 12px;
+  border-right: 1px solid #ddd;
+}
+
+.promo {
+  margin: 18px 0;
+  background: #ef4444;
+  color: white;
+  font-size: 34px;
+  font-weight: bold;
+  padding: 18px;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.promo span {
+  background: #fde68a;
+  color: #dc2626;
+  padding: 12px 28px;
+  border-radius: 10px;
+}
+
+.banner-section {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 50px;
+}
+
+.banner-list {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 5px;
+  animation: fadeSlide 0.25s ease;
+}
+
+.banner-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-card img {
+  width: 690px;
+  height: 300px;
+  object-fit: cover;
+}
+
+.banner-card h3 {
+  font-size: 15px;
+  font-weight: normal;
+  min-height: 58px;
+  width: 100%;
+  line-height: 1.4;
+}
+
+.banner-card p {
+  color: #f4511e;
+  font-weight: bold;
+  width: 100%;
+}
+
+.product-section {
+  position: relative;
+}
+
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  animation: fadeSlide 0.25s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0.75;
+    transform: translateX(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-card img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+}
+
+.product-card h3 {
+  font-size: 15px;
+  font-weight: normal;
+  min-height: 58px;
+  width: 100%;
+  line-height: 1.4;
+}
+
+.stars {
+  color: #ff9800;
+  width: 100%;
+}
+
+.product-card p {
+  color: #f4511e;
+  font-weight: bold;
+  width: 100%;
+}
+
+.slide-left,
+.slide-right {
+  position: absolute;
+  top: 35%;
+  z-index: 2;
+  border: none;
+  background: rgba(0, 0, 0, 0.25);
+  color: white;
+
+  font-size: 42px;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide-left {
+  left: -10px;
+}
+
+.slide-right {
+  right: -10px;
+}
+
+.slide-banner-left,
+.slide-banner-right {
+  // position: absolute;
+  // top: 35%;
+  z-index: 2;
+  border: none;
+  background: rgba(0, 0, 0, 0.25);
+  color: white;
+
+  font-size: 42px;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide-banner-left {
+  margin-left: 200px;
+  margin-top: 150px;
+}
+
+.slide-banner-right {
+  margin-right: 200px;
+  margin-top: 150px;
+}

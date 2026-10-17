@@ -1,0 +1,44 @@
+.space-app {
+  display: flex !important;
+  width: 100% !important;
+  height: 100vh !important;
+}
+
+.layout-app {
+  height: 100vh !important;
+  background-color: #f2f2f2;
+}
+
+// .left-icon {
+//   border-radius: 50%;
+//   width: 36px;
+//   height: 36px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+
+//   &:hover {
+//     background-color: #e5e5e5;
+//     cursor: pointer;
+//   }
+// }
+
+.left-icon {
+  display: none;
+}
+
+@media only screen and (max-width: 930px) {
+  .left-icon {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: #e5e5e5;
+      cursor: pointer;
+    }
+  }
+}

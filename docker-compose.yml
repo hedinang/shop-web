@@ -1,0 +1,23 @@
+#winitech eco system
+version: "3.8"
+
+services:
+  bid-api:
+    image: winitechvina/bid-api
+    container_name: bid-api
+    ports:
+      - "7000:7000"
+      - "8000:8000"
+    volumes:
+      - bid-api:/bid-api
+
+  bid-web:
+    image: winitechvina/bid-web
+    container_name: bid-web
+    ports:
+      - "443:443"
+    volumes:
+      - bid-web:/usr/share/nginx/html
+volumes:
+  bid-api:
+  bid-web:
