@@ -56,6 +56,7 @@ const ProfileModal = ({isModalOpen, closeModal}) => {
 
       const result = await uploadMultipartFile({
         file,
+        bucket: "avatar",
 
         onProgress: ({percent}) => {
           setProgress(percent);

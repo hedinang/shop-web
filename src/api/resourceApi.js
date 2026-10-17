@@ -44,19 +44,19 @@ class ResourceApi extends BaseApi {
 
 
   init(body) {
-    return this.post("free" + STORAGE + "create-multipart", body);
+    return this.post("secure" + STORAGE + "create-multipart", body);
   }
 
   partUrl(body) {
-    return this.post("free" + STORAGE + "create-part-url", body);
+    return this.post("secure" + STORAGE + "create-part-url", body);
   }
 
   complete(body) {
-    return this.post("free" + STORAGE + "complete", body);
+    return this.post("secure" + STORAGE + "complete", body);
   }
 
   abort(body) {
-    return this.post("free" + STORAGE + "abort", body);
+    return this.post("secure" + STORAGE + "abort", body);
   }
 
   uploadFile(presignedUrl, file, config) {
@@ -64,8 +64,10 @@ class ResourceApi extends BaseApi {
         presignedUrl,
         file,
         {
+          ...config,
           headers: {
             "Content-Type": "application/octet-stream",
+            ...(config?.headers || {}),
           }
         }
     );

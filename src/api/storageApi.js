@@ -7,6 +7,7 @@ const CONCURRENCY = 3;
 
 export const uploadFileWithUppy = async ({
                                            file,
+                                           bucket,
                                            onProgress,
                                          }) => {
   const uppy = new Uppy({
@@ -15,6 +16,8 @@ export const uploadFileWithUppy = async ({
       maxNumberOfFiles: 1,
     },
   });
+
+  let multipartMetadata;
 
   uppy.use(AwsS3, {
     // Luôn dùng multipart.
@@ -30,11 +33,14 @@ export const uploadFileWithUppy = async ({
     // 1. Java backend tạo multipart upload.
     async createMultipartUpload(uppyFile) {
       const result = await apiFactory.resourceApi.init({
+        bucket,
         fileName: uppyFile.name,
         fileSize: uppyFile.size,
         contentType:
             uppyFile.type || "application/octet-stream",
       })
+
+      multipartMetadata = result?.data;
 
       return {
         uploadId: result?.data?.uploadId,
@@ -54,10 +60,10 @@ export const uploadFileWithUppy = async ({
     ) {
 
       const response = await apiFactory.resourceApi.partUrl({
+        bucket: multipartMetadata?.bucket,
         uploadId: uploadId,
         objectKey: key,
-        partNumber:
-            String(partNumber)
+        partNumber,
       })
 
       return {
@@ -80,16 +86,22 @@ export const uploadFileWithUppy = async ({
         },
     ) {
       const result = await apiFactory.resourceApi.complete({
+        bucket: multipartMetadata?.bucket,
         uploadId,
         objectKey: key,
         parts: parts.map((part) => ({
           partNumber: part.PartNumber,
           etag: part.ETag,
         })),
+        fileName: multipartMetadata?.fileName,
+        fileSize: multipartMetadata?.fileSize,
+        contentType: multipartMetadata?.contentType,
+        date: multipartMetadata?.date,
+        uuid: multipartMetadata?.uuid,
       })
 
       return {
-        location: result?.data?.url,
+        location: result?.data?.location,
         ...result,
       };
     },
@@ -103,6 +115,7 @@ export const uploadFileWithUppy = async ({
         },
     ) {
       const result = await apiFactory.resourceApi.abort({
+        bucket: multipartMetadata?.bucket,
         uploadId,
         objectKey: key,
       })
@@ -158,6 +171,7 @@ export const uploadFileWithUppy = async ({
 
 export const uploadMultipartFile = async ({
                                             file,
+                                            bucket,
                                             onProgress,
                                             signal,
                                           }) => {
@@ -167,16 +181,19 @@ export const uploadMultipartFile = async ({
 
   let uploadId;
   let objectKey;
+  let multipartMetadata;
 
   try {
     const initResponse = await apiFactory.resourceApi.init({
+      bucket,
       fileName: file.name,
       fileSize: file.size,
       contentType: file.type || "application/octet-stream"
     })
 
-    uploadId = initResponse.data.uploadId;
-    objectKey = initResponse.data.objectKey;
+    multipartMetadata = initResponse.data;
+    uploadId = multipartMetadata.uploadId;
+    objectKey = multipartMetadata.objectKey;
 
     const chunks = createChunks(file);
 
@@ -190,6 +207,7 @@ export const uploadMultipartFile = async ({
 
       worker: async (chunk) => {
         const partPresignedResponse = await apiFactory.resourceApi.partUrl({
+          bucket: multipartMetadata.bucket,
           uploadId: uploadId,
           objectKey: objectKey,
           partNumber: chunk?.partNumber
@@ -260,9 +278,15 @@ export const uploadMultipartFile = async ({
 
     // 4. Complete multipart upload.
     const completeResponse = await apiFactory.resourceApi.complete({
+      bucket: multipartMetadata.bucket,
       uploadId,
       objectKey: objectKey,
       parts: completedParts,
+      fileName: multipartMetadata.fileName,
+      fileSize: multipartMetadata.fileSize,
+      contentType: multipartMetadata.contentType,
+      date: multipartMetadata.date,
+      uuid: multipartMetadata.uuid,
     })
 
     // return {
@@ -279,11 +303,18 @@ export const uploadMultipartFile = async ({
     return completeResponse.data;
   } catch (error) {
     if (uploadId && objectKey) {
-      const result = await apiFactory.resourceApi.abort({
-        uploadId,
-        objectKey,
-      })
+      try {
+        await apiFactory.resourceApi.abort({
+          bucket: multipartMetadata?.bucket,
+          uploadId,
+          objectKey,
+        });
+      } catch (abortError) {
+        console.error("Không thể hủy multipart upload sau khi upload thất bại", abortError);
+      }
     }
+
+    throw error;
   }
 };
 
