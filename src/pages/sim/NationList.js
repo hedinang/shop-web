@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import "./nationList.scss";
 import ReactCountryFlag from "react-country-flag";
 import viettel from "../../assets/network-operator/viettel.png";
@@ -90,6 +91,7 @@ const products = [
 ];
 
 const NationList = () => {
+  const navigate = useNavigate();
 
   const [bannerIndex, setBannerIndex] = useState(0);
   const [productIndex, setProductIndex] = useState(0);
@@ -131,13 +133,24 @@ const NationList = () => {
               <div className="flex gap-[20px]">
                 {countries.map(country =>
                     <Tooltip key={country.key} title={country.value}>
-                      <div className="rounded-full border border-[#ef4444] w-[48px] h-[48px] flex justify-center items-center">
+                      {country.key === "VN" ? (
+                        <button
+                            type="button"
+                            aria-label={`Browse eSIM packages for ${country.value}`}
+                            onClick={() => navigate("/product/vn")}
+                            className="rounded-full border border-[#ef4444] w-[48px] h-[48px] flex justify-center items-center bg-white cursor-pointer"
+                        >
+                          <ReactCountryFlag countryCode={country.key} svg style={{width: 28, height: 28}} />
+                        </button>
+                      ) : (
+                        <div className="rounded-full border border-[#ef4444] w-[48px] h-[48px] flex justify-center items-center">
                         <ReactCountryFlag
                             countryCode={country.key}
                             svg
                             style={{width: 28, height: 28}}
                         />
-                      </div>
+                        </div>
+                      )}
                     </Tooltip>
                 )}
               </div>
@@ -152,8 +165,8 @@ const NationList = () => {
                 )}
               </Row>
             </div>
-            <Row className="mt-[30px]">
-              <Col span={6} className="flex justify-center">
+            <Row gutter={[16, 16]} className="mt-[30px]">
+              <Col xs={24} sm={12} md={12} lg={6} className="flex justify-center">
                 <Card
                     hoverable
                     variant="borderless"
@@ -169,7 +182,7 @@ const NationList = () => {
                   <div className="font-semibold text-center">Instant delivery & ready to use</div>
                 </Card>
               </Col>
-              <Col span={6} className="flex justify-center">
+              <Col xs={24} sm={12} md={12} lg={6} className="flex justify-center">
                 <Card
                     hoverable
                     variant="borderless"
@@ -185,7 +198,7 @@ const NationList = () => {
                   <div className="font-semibold text-center">Best value for money</div>
                 </Card>
               </Col>
-              <Col span={6} className="flex justify-center">
+              <Col xs={24} sm={12} md={12} lg={6} className="flex justify-center">
                 <Card
                     hoverable
                     variant="borderless"
@@ -201,7 +214,7 @@ const NationList = () => {
                   <div className="font-semibold text-center">Global coverage</div>
                 </Card>
               </Col>
-              <Col span={6} className="flex justify-center">
+              <Col xs={24} sm={12} md={12} lg={6} className="flex justify-center">
                 <Card
                     hoverable
                     variant="borderless"

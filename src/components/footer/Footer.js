@@ -4,7 +4,7 @@ import "./style.scss";
 export const Footer = () => {
   // absolute bottom-0
   return (
-    <Row className="bg-[white]  w-full">
+    <Row className="site-footer w-full">
       <Col sm={0} md={0} xl={5} />
       <Col sm={24} md={12} xl={7} className="left-footer w-full">
         <div className="flex gap-[2px]">

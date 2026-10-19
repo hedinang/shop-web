@@ -10,6 +10,7 @@ import {AdminItemList} from "../pages/item/AdminItemList";
 import Login from "../pages/login";
 import {MailManagement} from "../pages/mail/MailManagement";
 import {NationList} from "../pages/sim/NationList";
+import {Product} from "../pages/product/Product";
 import {OrderList} from "../pages/cart/OrderList";
 import {SimList} from "../pages/sim/SimList";
 import {SupplierDetail} from "../pages/sim/SupplierDetail";
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "/nation-list",
         element: <NationList/>,
+      },
+      {
+        path: "/product/:country",
+        element: <Product/>,
       },
       {
         path: "/sim/search/:condition",

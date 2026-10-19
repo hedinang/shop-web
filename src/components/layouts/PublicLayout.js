@@ -9,9 +9,9 @@ import {Header} from "../header/Header";
 /* eslint-disable react-hooks/exhaustive-deps */
 export const PublicLayout = ({children}) => {
   return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex h-screen flex-col overflow-hidden">
         <Header/>
-        <main className="flex-1 bg-white">
+        <main className="min-h-0 flex-1 overflow-y-auto bg-[#f2f6f8]">
           <Outlet/>
         </main>
         <Footer/>
