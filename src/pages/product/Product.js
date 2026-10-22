@@ -1,10 +1,10 @@
 import React, {useMemo, useState} from "react";
 import ReactCountryFlag from "react-country-flag";
-import {Dropdown} from "antd";
+import {Dropdown, Pagination} from "antd";
 import {DollarOutlined, SortAscendingOutlined} from "@ant-design/icons";
 import "./product.scss";
 
-const packages = [
+const packageTemplates = [
   {id: 1, name: "Vietnam 5 GB", provider: "Viettel", type: "Local", data: 5, days: 7, price: 4.5, network: "4G", calls: "Data only"},
   {id: 2, name: "Vietnam 10 GB", provider: "Vinaphone", type: "Local", data: 10, days: 15, price: 8, network: "5G", calls: "Data only"},
   {id: 3, name: "Vietnam Unlimited", provider: "MobiFone", type: "Local", data: 30, days: 30, price: 18, network: "5G", calls: "Unlimited calls"},
@@ -14,6 +14,17 @@ const packages = [
   {id: 7, name: "Vietnam 20 GB", provider: "Viettel", type: "Local", data: 20, days: 90, price: 28, network: "5G", calls: "Data only"},
   {id: 8, name: "Vietnam 50 GB", provider: "Vinaphone", type: "Local", data: 50, days: 365, price: 45, network: "5G", calls: "Data only"},
 ];
+
+const packages = Array.from({length: 100}, (_, index) => {
+  const template = packageTemplates[index % packageTemplates.length];
+  const variation = Math.floor(index / packageTemplates.length);
+  return {
+    ...template,
+    id: index + 1,
+    name: `${template.name} (${index + 1})`,
+    price: Number((template.price + variation * 0.75).toFixed(2)),
+  };
+});
 
 const currencies = [
   {code: "USD", name: "US Dollar", rate: 3.67},
@@ -58,6 +69,8 @@ const Product = () => {
   const [filters, setFilters] = useState({type: "All", data: "All", days: "All", price: "All"});
   const [currencyCode, setCurrencyCode] = useState("AED");
   const [sortBy, setSortBy] = useState("suggested");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const currency = currencies.find((option) => option.code === currencyCode) || currencies[1];
   const currencyMenuItems = currencies.map((option) => ({
     key: option.code,
@@ -82,7 +95,15 @@ const Product = () => {
     [currency, filters, sortBy],
   );
 
-  const updateFilter = (key, value) => setFilters((current) => ({...current, [key]: value}));
+  const paginatedPackages = visiblePackages.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const clearFilters = () => {
+    setFilters({type: "All", data: "All", days: "All", price: "All"});
+    setCurrentPage(1);
+  };
+  const updateFilter = (key, value) => {
+    setFilters((current) => ({...current, [key]: value}));
+    setCurrentPage(1);
+  };
 
   return (
     <main className="product-page">
@@ -94,7 +115,13 @@ const Product = () => {
         </div>
         <div className="product-page__actions">
           <Dropdown
-            menu={{items: currencyMenuItems, onClick: ({key}) => setCurrencyCode(key)}}
+            menu={{
+              items: currencyMenuItems,
+              onClick: ({key}) => {
+                setCurrencyCode(key);
+                setCurrentPage(1);
+              },
+            }}
             placement="bottomRight"
             trigger={["click"]}
           >
@@ -107,7 +134,10 @@ const Product = () => {
             menu={{
               items: sortOptions,
               selectedKeys: [sortBy],
-              onClick: ({key}) => setSortBy(key),
+              onClick: ({key}) => {
+                setSortBy(key);
+                setCurrentPage(1);
+              },
             }}
             placement="bottomRight"
             trigger={["click"]}
@@ -124,7 +154,7 @@ const Product = () => {
         <aside className="product-filters" aria-label="Product filters">
           <div className="product-filters__heading">
             <h2>Filters</h2>
-            <button type="button" onClick={() => setFilters({type: "All", data: "All", days: "All", price: "All"})}>
+            <button type="button" onClick={clearFilters}>
               Clear
             </button>
           </div>
@@ -157,7 +187,7 @@ const Product = () => {
         <section className="product-results" aria-label="Available eSIM packages">
           {visiblePackages.length > 0 ? (
             <div className="product-grid">
-              {visiblePackages.map((product) => (
+              {paginatedPackages.map((product) => (
                 <article className="plan-card" key={product.id}>
                   <div className="plan-card__top">
                     <div className="plan-card__brand" aria-hidden="true">{product.provider.slice(0, 1)}</div>
@@ -186,12 +216,23 @@ const Product = () => {
             <div className="product-empty">
               <h3>No plans match these filters</h3>
               <p>Try changing or clearing some filters to see available plans.</p>
-              <button type="button" onClick={() => setFilters({type: "All", data: "All", days: "All", price: "All"})}>
+              <button type="button" onClick={clearFilters}>
                 Clear filters
               </button>
             </div>
           )}
         </section>
+        {visiblePackages.length > pageSize && (
+          <nav className="product-pagination" aria-label="Product pages">
+            <Pagination
+              current={currentPage}
+              total={visiblePackages.length}
+              pageSize={pageSize}
+              showSizeChanger={false}
+              onChange={setCurrentPage}
+            />
+          </nav>
+        )}
       </div>
     </main>
   );
