@@ -2,22 +2,22 @@
 version: "3.8"
 
 services:
-  bid-api:
-    image: winitechvina/bid-api
-    container_name: bid-api
+  shop-api:
+    image: docker.io/winitechvina/shop-api:latest
+    container_name: shop-api
     ports:
-      - "7000:7000"
-      - "8000:8000"
+      - "7101:7101"
+      - "7100:7100"
     volumes:
-      - bid-api:/bid-api
+      - shop-api:/shop-api
 
-  bid-web:
-    image: winitechvina/bid-web
-    container_name: bid-web
+  shop-web:
+    image: docker.io/winitechvina/shop-web:latest
+    container_name: shop-web
     ports:
-      - "443:443"
+      - "5000:443"
     volumes:
-      - bid-web:/usr/share/nginx/html
+      - shop-web:/usr/share/nginx/html
 volumes:
-  bid-api:
-  bid-web:
+  shop-api:
+  shop-web:

@@ -117,7 +117,8 @@ export const Header = () => {
   ];
 
   const handleMenuClick = (e) => {
-    navigate(`/sim/search/${e}`);
+    // navigate(`/sim/search/${e}`);
+    navigate(`/product/VN`);
   };
 
   const cancelLogin = () => {

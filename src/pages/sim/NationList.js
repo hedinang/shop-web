@@ -133,24 +133,14 @@ const NationList = () => {
               <div className="flex gap-[20px]">
                 {countries.map(country =>
                     <Tooltip key={country.key} title={country.value}>
-                      {country.key === "VN" ? (
-                        <button
-                            type="button"
-                            aria-label={`Browse eSIM packages for ${country.value}`}
-                            onClick={() => navigate("/product/vn")}
-                            className="rounded-full border border-[#ef4444] w-[48px] h-[48px] flex justify-center items-center bg-white cursor-pointer"
-                        >
-                          <ReactCountryFlag countryCode={country.key} svg style={{width: 28, height: 28}} />
-                        </button>
-                      ) : (
-                        <div className="rounded-full border border-[#ef4444] w-[48px] h-[48px] flex justify-center items-center">
-                        <ReactCountryFlag
-                            countryCode={country.key}
-                            svg
-                            style={{width: 28, height: 28}}
-                        />
-                        </div>
-                      )}
+                      <button
+                          type="button"
+                          aria-label={`Browse eSIM packages for ${country.value}`}
+                          onClick={() => navigate(`/product/${country.key}`)}
+                          className="rounded-full border border-[#ef4444] w-[48px] h-[48px] flex justify-center items-center bg-white cursor-pointer"
+                      >
+                        <ReactCountryFlag countryCode={country.key} svg style={{width: 28, height: 28}}/>
+                      </button>
                     </Tooltip>
                 )}
               </div>
